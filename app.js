@@ -4,6 +4,25 @@
 const $ = (sel, root = document) => root.querySelector(sel);
 const PREFERS_REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+const store = {
+  get(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (_) {
+      return fallback;
+    }
+  },
+  set(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+};
+
 /* ---------- intro typewriter ---------- */
 const INTRO = "Hi — this is Terry's little kit box. You're probably the recruiter looking at my application. Let me show you a bit about your connection, the honest way.";
 
@@ -160,10 +179,37 @@ function pushLatency(ms) {
   return avg;
 }
 
+/* ---------- Card C: connection over time ---------- */
+const TIMELINE_KEY = "tkb_timeline_v1";
+
+function recordTimeline(avgMs) {
+  const hist = store.get(TIMELINE_KEY, []);
+  hist.push({ t: Date.now(), ms: Math.round(avgMs) });
+  while (hist.length > 60) hist.shift();
+  store.set(TIMELINE_KEY, hist);
+  return hist;
+}
+
+function drawTimeline(hist) {
+  const out = $("#time-out");
+  if (!hist || hist.length < 2) {
+    out.textContent = "keep this open to build your timeline · local only";
+    return;
+  }
+  drawLine($("#timeline"), hist.map((p) => p.ms), 6);
+  const vals = hist.map((p) => p.ms);
+  out.textContent =
+    hist.length + " local samples · min " +
+    Math.min(...vals) + " / max " + Math.max(...vals) + " ms";
+}
+
 function startLatencyLoop() {
   async function tick() {
     const ms = await pingOnce();
-    if (ms != null) pushLatency(ms);
+    if (ms != null) {
+      const avg = pushLatency(ms);
+      drawTimeline(recordTimeline(avg));
+    }
   }
   tick();
   setInterval(tick, 4000);
@@ -200,4 +246,5 @@ document.addEventListener("DOMContentLoaded", function boot() {
   loadConnection();
   startLatencyLoop();
   $("#speedtest").addEventListener("click", speedTest);
+  drawTimeline(store.get(TIMELINE_KEY, []));
 });
