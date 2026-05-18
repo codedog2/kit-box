@@ -169,9 +169,35 @@ function startLatencyLoop() {
   setInterval(tick, 4000);
 }
 
+/* ---------- Card B: download speed test ---------- */
+const SPEED_URL = "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js";
+
+async function speedTest() {
+  const btn = $("#speedtest");
+  const out = $("#speed-out");
+  btn.disabled = true;
+  out.textContent = "measuring…";
+  try {
+    const t0 = performance.now();
+    const res = await fetch(SPEED_URL + "?_=" + Date.now(), { cache: "no-store" });
+    const buf = await res.arrayBuffer();
+    const secs = (performance.now() - t0) / 1000;
+    const mbps = (buf.byteLength * 8) / secs / 1e6;
+    out.textContent =
+      "≈ " + mbps.toFixed(1) + " Mbps  (" +
+      (buf.byteLength / 1024).toFixed(0) + " KB in " +
+      secs.toFixed(2) + " s · approximate)";
+  } catch (_) {
+    out.textContent = "speed test unavailable";
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 /* ---------- boot ---------- */
 document.addEventListener("DOMContentLoaded", function boot() {
   runIntro();
   loadConnection();
   startLatencyLoop();
+  $("#speedtest").addEventListener("click", speedTest);
 });
