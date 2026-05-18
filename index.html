@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A small honest browser-diagnostics tool by Terry Feng.">
+  <title>Terry's Kit Box</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="wrap">
+    <section id="intro" class="intro">
+      <p id="typed" class="typed" aria-live="polite"></p>
+      <button id="skip" class="skip" type="button">skip</button>
+    </section>
+
+    <section id="cards" class="cards" hidden>
+      <article class="card" id="card-conn">
+        <h2 class="card__title">Your Connection</h2>
+        <dl class="kv">
+          <div><dt>Public IP</dt><dd data-field="ip">…</dd></div>
+          <div><dt>ISP / Carrier</dt><dd data-field="isp">…</dd></div>
+          <div><dt>ASN / Org</dt><dd data-field="asn">…</dd></div>
+          <div><dt>Location</dt><dd data-field="loc">…</dd></div>
+          <div><dt>Connection type</dt><dd data-field="conn">…</dd></div>
+        </dl>
+        <p class="src" id="conn-src">source: —</p>
+        <p class="note">This comes from a third-party public API. This page stores nothing and uploads nothing.</p>
+      </article>
+
+      <article class="card" id="card-speed">
+        <h2 class="card__title">Speed &amp; Latency</h2>
+        <div class="metrics">
+          <div class="metric"><span class="metric__val" id="lat-avg">—</span><span class="metric__lbl">avg ms</span></div>
+          <div class="metric"><span class="metric__val" id="lat-min">—</span><span class="metric__lbl">min ms</span></div>
+          <div class="metric"><span class="metric__val" id="lat-jit">—</span><span class="metric__lbl">jitter ms</span></div>
+        </div>
+        <svg class="spark" id="spark" viewBox="0 0 300 60" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <button id="speedtest" class="btn" type="button">Run download speed test</button>
+        <p class="src" id="speed-out">approximate · click to measure</p>
+      </article>
+
+      <article class="card" id="card-time">
+        <h2 class="card__title">Connection Over Time</h2>
+        <svg class="timeline" id="timeline" viewBox="0 0 300 90" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <p class="src" id="time-out">your own local measurements only</p>
+        <p class="note">General rule of thumb (not measured from your ISP): home broadband is usually busiest around 19:00–23:00 local time. Large downloads tend to go smoother off-peak.</p>
+      </article>
+    </section>
+
+    <footer class="foot">
+      <span class="foot__name">Terry Feng</span>
+      <span class="foot__sub">Built for the Virtuozzo L1 Support interview · 2026</span>
+      <a id="repo" class="foot__link" href="https://github.com/terry-feng/terrys-kit-box" rel="noopener" target="_blank">source on GitHub</a>
+    </footer>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>
