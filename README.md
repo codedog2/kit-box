@@ -50,5 +50,7 @@ Then open `http://localhost:8080/`.
 3. Wait for the Pages build, then open the published URL.
 
 The repository link in the page footer points to
-`https://github.com/terry-feng/terrys-kit-box`; update it in `index.html`
-if the real repository path differs.
+`https://github.com/codedog2/kit-box`.
+
+Once Pages is enabled, the tool will be live at
+`https://codedog2.github.io/kit-box/`.
