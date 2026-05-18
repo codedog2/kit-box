@@ -24,7 +24,7 @@ const store = {
 };
 
 /* ---------- intro typewriter ---------- */
-const INTRO = "Hi — this is Terry's little kit box. You're probably the recruiter looking at my application. Let me show you a bit about your connection, the honest way.";
+const INTRO = "Hi — this is Terry's little kit box. You're probably the recruiter looking at my application. Let me show you a bit about your connection.";
 
 function revealCards() {
   const cards = $("#cards");
