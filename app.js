@@ -108,8 +108,70 @@ async function loadConnection() {
   $("#conn-src").textContent = "source: unavailable (both providers failed)";
 }
 
+/* ---------- Card B: latency ---------- */
+const LAT_URL = "https://cdn.jsdelivr.net/npm/jquery@3.7.1/package.json";
+const latSamples = [];
+
+async function pingOnce() {
+  const t0 = performance.now();
+  try {
+    await fetch(LAT_URL + "?_=" + Date.now(), { cache: "no-store" });
+    return performance.now() - t0;
+  } catch (_) {
+    return null;
+  }
+}
+
+function drawLine(svgEl, values, padY) {
+  if (!values.length) return;
+  const W = 300;
+  const H = svgEl === $("#timeline") ? 90 : 60;
+  const max = Math.max(...values);
+  const min = Math.min(...values);
+  const span = (max - min) || 1;
+  const pts = values.map((v, idx) => {
+    const x = values.length === 1 ? W : (idx / (values.length - 1)) * W;
+    const y = H - ((v - min) / span) * (H - padY * 2) - padY;
+    return x.toFixed(1) + "," + y.toFixed(1);
+  }).join(" ");
+  svgEl.innerHTML =
+    '<polyline points="' + pts + '" fill="none" stroke="var(--accent)" ' +
+    'stroke-width="2" stroke-linejoin="round" stroke-linecap="round" ' +
+    'vector-effect="non-scaling-stroke"/>';
+}
+
+function pushLatency(ms) {
+  latSamples.push(ms);
+  if (latSamples.length > 40) latSamples.shift();
+
+  const avg = latSamples.reduce((a, b) => a + b, 0) / latSamples.length;
+  const mn = Math.min(...latSamples);
+  let jit = 0;
+  if (latSamples.length > 1) {
+    let sum = 0;
+    for (let k = 1; k < latSamples.length; k++) sum += Math.abs(latSamples[k] - latSamples[k - 1]);
+    jit = sum / (latSamples.length - 1);
+  }
+
+  $("#lat-avg").textContent = avg.toFixed(0);
+  $("#lat-min").textContent = mn.toFixed(0);
+  $("#lat-jit").textContent = jit.toFixed(0);
+  drawLine($("#spark"), latSamples, 4);
+  return avg;
+}
+
+function startLatencyLoop() {
+  async function tick() {
+    const ms = await pingOnce();
+    if (ms != null) pushLatency(ms);
+  }
+  tick();
+  setInterval(tick, 4000);
+}
+
 /* ---------- boot ---------- */
 document.addEventListener("DOMContentLoaded", function boot() {
   runIntro();
   loadConnection();
+  startLatencyLoop();
 });
