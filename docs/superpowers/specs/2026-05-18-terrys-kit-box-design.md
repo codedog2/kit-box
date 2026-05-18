@@ -114,7 +114,21 @@ Out of scope (explicitly cut):
 - Pure HTML + CSS + vanilla JS. Zero build, zero framework, zero npm. Push to a
   GitHub Pages repo and it works.
 - Mobile-first responsive layout: single column on phones, two-column grid on
-  wider screens. Dark, restrained, professional styling. No emoji.
+  wider screens. No emoji.
+- Visual quality bar: the design must look polished and high-end, not a plain
+  utility page. This is an explicit success criterion. Specifics:
+  - A cohesive dark theme with a refined, restrained palette (one accent color,
+    a deliberate neutral scale), not default browser styling.
+  - Typographic care: a clean modern typeface, a clear type scale, generous
+    spacing and alignment; numeric readouts use tabular figures so live values
+    don't jitter.
+  - Cards are visually crafted (subtle elevation/borders, soft gradients or
+    glass-like surfaces, rounded corners) and consistent.
+  - Smooth, tasteful micro-animations: typewriter intro, card fade/stagger-in,
+    eased sparkline/gauge updates. Motion is subtle and never gimmicky.
+  - Honors `prefers-reduced-motion` (reduced or no animation) and keeps
+    readable contrast (accessibility = part of "high-end").
+  - Looks equally polished on a phone and on a wide screen.
 - Only external dependency: one no-key public IP-info API plus a backup
   provider. All other measurement is done client-side.
 - Robust failure handling everywhere: every external/optional API is wrapped so
@@ -139,3 +153,5 @@ in the current working directory). This repo is what gets pushed to GitHub Pages
 - A degraded network / blocked API still yields a coherent, non-broken page.
 - An engineer reviewing the source sees clean, dependency-free, readable code.
 - The honesty framing is visible and is the memorable takeaway.
+- The page looks visibly polished and high-end at first glance, on both phone
+  and desktop — a non-negotiable requirement, not a nice-to-have.
